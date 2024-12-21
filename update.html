@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/milligram.min.css" />
+    <title>Document</title>
+    <style>
+      *{
+          border: 0;
+          position: relative;
+      }
+      .loader{
+          
+          width: 100%;
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position:absolute;
+          background-color:white;
+          z-index: 9999;
+          
+      }
+      .img{
+          width: 100px;
+          height: 10px;
+      }
+      .show{
+          display: none!important;
+      }
+     
+  </style>
+  </head>
+  <body>
+    
+    <div  class="loader show">
+      <img class="img" src="/css/img/Glass lines.gif" alt="">
+    </div>
+
+    <div class="container">
+      <center><h1 class="">Todo App with axios</h1></center>
+      <div class="row">
+        <div class="column">
+          <label>Product Name</label>
+          <input type="text" placeholder="" id="ProductName" />
+          <label>Product Code</label>
+          <input type="text" placeholder="" id="ProductCode" />
+          <label>Product Image</label>
+          <input type="text" placeholder="" id="ProductImage" />
+          <label>Unit Price</label>
+          <input type="text" placeholder="" id="UnitPrice" />
+          <label>Product Qty</label>
+          <input type="text" placeholder="" id="ProductQty" />
+          <label>Product Total</label>
+          <input type="text" placeholder="" id="ProductTotal" />
+          <button onclick="updateData()">SUBMIT</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/axios.min.js"></script>
+    <script>
+      getData();
+      async function getData() {
+        let urlParam = new URLSearchParams(window.location.search);
+        let id = urlParam.get("id");
+        let url = `https://crud.teamrabbil.com/api/v1/ReadProductByID/${id}`;
+        document.querySelector('.loader').classList.remove('show')
+        let res = await axios.get(url);
+        let data = res.data["data"][0];
+        document.querySelector('.loader').classList.add('show')
+
+        document.querySelector("#ProductName").value = data["ProductName"];
+        document.querySelector("#ProductCode").value = data["ProductCode"];
+        document.querySelector("#ProductImage").value = data["Img"];
+        document.querySelector("#UnitPrice").value = data["UnitPrice"];
+        document.querySelector("#ProductQty").value = data["Qty"];
+        document.querySelector("#ProductTotal").value = data["TotalPrice"];
+      }
+      async function updateData() {
+        let urlParam = new URLSearchParams(window.location.search);
+        let id = urlParam.get("id");
+        let url = `https://crud.teamrabbil.com/api/v1/UpdateProduct/${id}`;
+
+        let ProductName = document.querySelector("#ProductName").value;
+        let ProductCode = document.querySelector("#ProductCode").value;
+        let ProductImage = document.querySelector("#ProductImage").value;
+        let UnitPrice = document.querySelector("#UnitPrice").value;
+        let ProductQty = document.querySelector("#ProductQty").value;
+        let ProductTotal = document.querySelector("#ProductTotal").value;
+
+        let obj = {
+          Img: ProductImage,
+          ProductCode:ProductCode,
+          ProductName:ProductName,
+          Qty:ProductQty,
+          TotalPrice: ProductTotal,
+          UnitPrice: UnitPrice,
+        };
+        await axios.post(url,obj);
+
+        
+        window.location =`index.html`
+      }
+    </script>
+  </body>
+</html>
